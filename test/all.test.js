@@ -2,6 +2,8 @@ const { app } = require("../app");
 const request = require("supertest");
 const { sequelize } = require("../models");
 const { queryInterface } = sequelize;
+const moment = require('moment')
+const fs = require('fs')
 
 // Create queue - Done
 // Read queue unfinish - Done
@@ -14,6 +16,76 @@ const { queryInterface } = sequelize;
 // Validasi create queue: on progress (prohibited) - Done
 
 const testId = null;
+
+const merchantsjson = JSON.parse(fs.readFileSync('./merchant.json'))
+const customersjson = JSON.parse(fs.readFileSync('./customer.json'))
+const servicesjson = JSON.parse(fs.readFileSync('./service.json'))
+merchantsjson.forEach(el => {
+  el.createdAt = new Date(),
+  el.updatedAt = new Date()
+})
+customersjson.forEach(el => {
+  el.createdAt = new Date(),
+  el.updatedAt = new Date()
+})
+servicesjson.forEach(el => {
+  el.createdAt = new Date(),
+  el.updatedAt = new Date()
+})
+
+beforeAll((done) => {
+  queryInterface
+    .bulkInsert("Merchants", merchantsjson)
+    .then((_) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+  queryInterface
+    .bulkInsert("Customers", customersjson)
+    .then((_) => {
+      done()
+    })
+    .catch(err => {
+      done(err)
+    })
+  queryInterface
+    .bulkInsert("Services", servicesjson)
+    .then((_) => {
+      done()
+    })
+    .catch(err => {
+      done(err)
+    })
+});
+afterAll((done) => {
+  queryInterface
+    .bulkDelete("Merchants", {})
+    .then((_) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+  queryInterface
+    .bulkDelete("Customers", {})
+    .then((_) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+  queryInterface
+    .bulkDelete("Services", {})
+    .then((_) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
 
 //Queue
 describe("Queue Table", () => {
@@ -28,32 +100,29 @@ describe("Queue Table", () => {
     describe("success create queue", () => {
       test("this should return with id and data of queue", (done) => {
         const inputQueue = {
-          customer_id: 1,
-          service_id: 1,
-          status: "pending",
+          CustomerId: 1,
+          ServiceId: 1,
+          status: "Pending",
           book_date: "2020-05-29T02:07:51.682Z",
-          check_in: false,
-          check_out: false,
         };
         request(app)
-          .post("/queues")
+          .post("/queue")
           .send(inputQueue)
           .end((err, res) => {
             if (err) done(err);
+            //Ini buat find by id test selanjutnya
             testId = res.body.id;
             expect(res.status).toBe(201);
             expect(res.body).toHaveProperty("id", expect.any(Number));
             expect(res.body).toHaveProperty(
-              "customer_id",
-              inputQueue.customer_id
+              "CustomerId",
+              inputQueue.CustomerId
             );
             expect(res.body).toHaveProperty(
-              "service_id",
-              inputQueue.service_id
+              "ServiceId",
+              inputQueue.ServiceId
             );
             expect(res.body).toHaveProperty("book_date", expect.any(String));
-            expect(res.body).toHaveProperty("check_in", inputQueue.check_in);
-            expect(res.body).toHaveProperty("check_out", inputQueue.check_out);
             return done();
           });
       });
@@ -61,14 +130,12 @@ describe("Queue Table", () => {
     describe("error process", () => {
       test("this should return error status (400) of missing customer id", (done) => {
         request(app)
-          .post("/queues")
+          .post("/queue")
           .send({
-            customer_id: null,
-            service_id: 1,
-            status: "pending",
+            CustomerId: null,
+            ServiceId: 1,
+            status: "Pending",
             book_date: "2020-05-29T02:07:51.682Z",
-            check_in: false,
-            check_out: false,
           })
           .end((err, res) => {
             if (err) done(err);
@@ -79,14 +146,12 @@ describe("Queue Table", () => {
       });
       test("this should return error status (400) of missing service id", (done) => {
         request(app)
-          .post("/queues")
+          .post("/queue")
           .send({
-            customer_id: 1,
-            service_id: null,
-            status: "pending",
+            CustomerId: 1,
+            ServiceId: null,
+            status: "Pending",
             book_date: "2020-05-29T02:07:51.682Z",
-            check_in: false,
-            check_out: false,
           })
           .end((err, res) => {
             if (err) done(err);
@@ -97,14 +162,12 @@ describe("Queue Table", () => {
       });
       test("this should return error status (400) of missing book date", (done) => {
         request(app)
-          .post("/queues")
+          .post("/queue")
           .send({
-            customer_id: 1,
-            service_id: 1,
-            status: "pending",
+            CustomerId: 1,
+            ServiceId: 1,
+            status: "Pending",
             book_date: null,
-            check_in: false,
-            check_out: false,
           })
           .end((err, res) => {
             if (err) done(err);
@@ -116,50 +179,12 @@ describe("Queue Table", () => {
       });
       test("this should return error status (400) of missing status", (done) => {
         request(app)
-          .post("/queues")
+          .post("/queue")
           .send({
-            customer_id: 1,
-            service_id: 1,
+            CustomerId: 1,
+            ServiceId: 1,
             status: null,
             book_date: "2020-05-29T02:07:51.682Z",
-            check_in: false,
-            check_out: false,
-          })
-          .end((err, res) => {
-            if (err) done(err);
-            expect(res.status).toBe(400);
-            expect(res.body).toHaveProperty("message", "Bad Request");
-            return done();
-          });
-      });
-      test("this should return error status (400) of missing check in", (done) => {
-        request(app)
-          .post("/queues")
-          .send({
-            customer_id: 1,
-            service_id: 1,
-            status: "pending",
-            book_date: "2020-05-29T02:07:51.682Z",
-            check_in: null,
-            check_out: false,
-          })
-          .end((err, res) => {
-            if (err) done(err);
-            expect(res.status).toBe(400);
-            expect(res.body).toHaveProperty("message", "Bad Request");
-            return done();
-          });
-      });
-      test("this should return error status (400) of missing check out", (done) => {
-        request(app)
-          .post("/queues")
-          .send({
-            customer_id: 1,
-            service_id: 1,
-            status: "pending",
-            book_date: "2020-05-29T02:07:51.682Z",
-            check_in: false,
-            check_out: null,
           })
           .end((err, res) => {
             if (err) done(err);
@@ -172,12 +197,10 @@ describe("Queue Table", () => {
         beforeEach((done) => {
           queryInterface.bulkInsert("Queues", [
             {
-              customer_id: 1,
-              service_id: 1,
-              status: "pending",
+              CustomerId: 1,
+              ServiceId: 1,
+              status: "Pending",
               book_date: new Date(),
-              check_in: false,
-              check_out: false,
             },
           ]);
         })
@@ -192,17 +215,15 @@ describe("Queue Table", () => {
           request(app)
             .post("/post")
             .send({
-              customer_id: 1,
-              service_id: 2,
-              status: "pending",
+              CustomerId: 1,
+              ServiceId: 2,
+              status: "Pending",
               book_date: newDate(),
-              check_in: false,
-              check_out: false,
             })
             .end((err, res) => {
               if (err) done(err);
-              expect(res.status).toBe(401);
-              expect(res.body).toHaveProperty("message", "unfinish queue");
+              expect(res.status).toBe(400);
+              expect(res.body.errors).toContain("message", "You cannot have more than one ongoing booking");
               return done();
             });
         });
@@ -214,7 +235,31 @@ describe("Queue Table", () => {
     describe("success read queue", () => {
       test("should return data queue of object and status 200", (done) => {
         request(app)
-          .get("/queues")
+          .get("/queue")
+          .end((err, res) => {
+            if (err) done(err);
+            expect(res.status).toBe(200);
+            expect.any(Array);
+            return done();
+          });
+      });
+    });
+    describe("success read queue by ", () => {
+      test("should return data queue of object and status 200", (done) => {
+        request(app)
+          .get("/queue/1")
+          .end((err, res) => {
+            if (err) done(err);
+            expect(res.status).toBe(200);
+            expect.any(Array);
+            return done();
+          });
+      });
+    });
+    describe("success read queue by queueId", () => {
+      test("should return data queue of object and status 200", (done) => {
+        request(app)
+          .get("/queue/1")
           .end((err, res) => {
             if (err) done(err);
             expect(res.status).toBe(200);
@@ -227,17 +272,15 @@ describe("Queue Table", () => {
   //Edit Queue
   describe("edit queue", () => {
     const change = {
-      customer_id: 1,
-      service_id: 1,
+      CustomerId: 1,
+      ServiceId: 1,
       status: "finish",
       book_date: "2020-05-29T02:07:51.682Z",
-      check_in: false,
-      check_out: false,
     };
     describe('success edit queue status to "finish"', () => {
       test("should return status 200 and queue data", (done) => {
         request(app)
-          .patch(`/queues/${testId}`)
+          .patch(`/queue/${testId}`)
           .send(change)
           .end((err, res) => {
             if (err) done(err);
@@ -252,7 +295,7 @@ describe("Queue Table", () => {
       changeToCancel.status = "cancel";
       test("should return status 200 and queue data", (done) => {
         request(app)
-          .patch(`/queues/${testId}`)
+          .patch(`/queue/${testId}`)
           .send(changeToCancel)
           .end((err, res) => {
             if (err) done(err);
@@ -267,7 +310,7 @@ describe("Queue Table", () => {
       changeToCancel.status = "late";
       test("should return status 200 and queue data", (done) => {
         request(app)
-          .patch(`/queues/${testId}`)
+          .patch(`/queue/${testId}`)
           .send(changeToLate)
           .end((err, res) => {
             if (err) done(err);
@@ -287,39 +330,6 @@ describe("Queue Table", () => {
 describe("Service Table", () => {
   // Read service (DISPLAY)
   describe("Read Service", () => {
-    beforeEach((done) => {
-      queryInterface
-        .bulkInsert("Services", [
-          {
-            owner_id: 1,
-            queue_id: 1,
-            name: "Cuci Mobil",
-            estimation_time: 15,
-          },
-          {
-            owner_id: 1,
-            queue_id: 2,
-            name: "Cuci Mobil",
-            estimation_time: 15,
-          },
-        ])
-        .then((_) => {
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    afterEach((done) => {
-      queryInterface
-        .bulkDelete("Services", {})
-        .then((_) => {
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
     describe("Success Porcess", () => {
       test("should return an array of object from service with status code (200)", (done) => {
         request(app)
@@ -335,47 +345,14 @@ describe("Service Table", () => {
   });
 });
 
-//Owner
-describe("Owner Table", () => {
-  // Read Owner (DISPLAY)
-  describe("Read Owner", () => {
-    beforeEach((done) => {
-      queryInterface
-        .bulkInsert("Owners", [
-          {
-            email: "test@mail.com",
-            password: "123456",
-            name: "Owner 1",
-            address: "st. John",
-          },
-          {
-            email: "test2@mail.com",
-            password: "123456",
-            name: "Owner 2",
-            address: "st. Doe",
-          },
-        ])
-        .then((_) => {
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    afterEach((done) => {
-      queryInterface
-        .bulkDelete("Owners", {})
-        .then((_) => {
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
+//Merchant
+describe("Merchant Table", () => {
+  // Read Merchant (DISPLAY)
+  describe("Read Merchant", () => {
     describe("Success Porcess", () => {
-      test("should return an array of object from owners with status code (200)", (done) => {
+      test("should return an array of object from merchants with status code (200)", (done) => {
         request(app)
-          .get("/owners")
+          .get("/merchant")
           .end((err, res) => {
             if (err) done(err);
             expect(res.status).toBe(200);

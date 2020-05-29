@@ -1,0 +1,43 @@
+[
+    {
+        "name": "car wash 99",
+        "email": "carwash99@mail.com",
+        "password": "carwash99",
+        "address": "-6.220918,107.018009",
+        "open_time": "Sat May 30 2020 08:00:00",
+        "close_time": "Sat May 30 2020 17:30:00"
+    },
+    {
+        "name": "Lutv Carwash",
+        "email": "lutvcarwash@mail.com",
+        "password": "lutvcarwash",
+        "address": "-6.205260,107.008201",
+        "open_time": "Sat May 30 2020 08:00:00",
+        "close_time": "Sat May 30 2020 17:30:00"
+        
+    },
+    {
+        "name": "Steam Motor Depan BSI",
+        "email": "depanBSI@mail.com",
+        "password": "depanBSI",
+        "address": "-6.206715,107.015605",
+        "open_time": "Sat May 30 2020 08:00:00",
+        "close_time": "Sat May 30 2020 17:30:00"
+    },
+    {
+        "name": "Duta Motor",
+        "email": "dutamotor@mail.com",
+        "password": "dutamotor",
+        "address": "-6.216586,107.020676",
+        "open_time": "Sat May 30 2020 08:00:00",
+        "close_time": "Sat May 30 2020 17:30:00"
+    },
+    {
+        "name": "Keppo Steam",
+        "email": "kepposteam@mail.com",
+        "password": "kepposteam",
+        "address": "-6.214495,107.019603",
+        "open_time": "Sat May 30 2020 08:00:00",
+        "close_time": "Sat May 30 2020 17:30:00"
+    }
+]
