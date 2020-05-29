@@ -1,0 +1,38 @@
+[
+    {
+        "CustomerId": 1,
+        "ServiceId": 1,
+        "status": "Pending",
+        "book_date": "2020-05-29T02:07:51.682Z"
+    },
+    {
+        "CustomerId": 2,
+        "ServiceId": 2,
+        "status": "Pending",
+        "book_date": "2020-05-29T02:07:51.682Z"
+    },
+    {
+        "CustomerId": 3,
+        "ServiceId": 3,
+        "status": "Pending",
+        "book_date": "2020-05-29T02:07:51.682Z"
+    },
+    {
+        "CustomerId": 4,
+        "ServiceId": 4,
+        "status": "Pending",
+        "book_date": "2020-05-29T02:07:51.682Z"
+    },
+    {
+        "CustomerId": 5,
+        "ServiceId": 5,
+        "status": "Pending",
+        "book_date": "2020-05-29T02:07:51.682Z"
+    },
+    {
+      "CustomerId": 6,
+      "ServiceId": 6,
+      "status": "Pending",
+      "book_date": "2020-05-29T02:07:51.682Z"
+    }
+]

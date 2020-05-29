@@ -3,31 +3,32 @@ const { Op } = require('sequelize')
 
 class QueueController {
   static create(req, res, next) {
-    const { id, CustomerId, ServiceId } = req.body
+    const { CustomerId, ServiceId } = req.body
     Queue.findAll({
-        where: {
-            [Op.and]: [
-                { status: ['Pending', 'OnProgress'] },
-                { CustomerId }
-            ]
-        }
+      where: {
+        [Op.and]: [
+          { status: ['Pending', 'OnProgress'] },
+          { CustomerId }
+        ]
+      }
     })
-    .then(response => {
-        if ( response.length < 1 ) {
-            Queue.create({ id, CustomerId, ServiceId })
-              .then(response => {
-                return res.status(200).json(response)
-              })
-              .catch(err => {
-                return next(err)
-              })
-        } else {
-            return next({
-                name: 'Bad Request',
-                errors: [{ message: 'You cannot have more than one ongoing booking' }]
+      .then(response => {
+        if (response.length < 1) {
+          Queue.create({ CustomerId, ServiceId })
+            .then(response => {
+              return res.status(201).json(response)
             })
+            .catch(err => {
+              return next(err)
+            })
+        } else {
+          console.log(response, '<<<<<<<<<<<<<<<<<<<<<<INI MASUK ELSE BENER')
+          return next({
+            name: 'Bad Request',
+            errors: [{ message: 'You cannot have more than one ongoing booking' }]
+          })
         }
-    })
+      })
   }
   static readByQueueId(req, res, next) {
     const { id } = req.params
@@ -42,13 +43,13 @@ class QueueController {
 
   static readByService(req, res, next) {
     const { id } = req.params
-    Queue.findAll({ 
-        where: { 
-            [Op.and]: [
-                { ServiceId: id  },
-                { status: ['Pending', 'OnProgress'] }
-            ]
-        } 
+    Queue.findAll({
+      where: {
+        [Op.and]: [
+          { ServiceId: id },
+          { status: ['Pending', 'OnProgress'] }
+        ]
+      }
     })
       .then(response => {
         return res.status(200).json(response)
@@ -70,18 +71,33 @@ class QueueController {
         }
       }
     )
-    .then(response => {
+      .then(response => {
         return res.status(200).json(response)
-    })
-    .catch(err => {
+      })
+      .catch(err => {
         return next(err)
-    })
+      })
   }
 
   static updateStatus(req, res, next) {
     const { id } = req.params
-    Queue.update
+    
+    Queue.update({
+      ...req.body
+    },
+    {
+      where: {
+        id
+      },
+      returning: true
+    })
+    .then(response => {
+      return res.status(200).json(response[1][0])
+    })
+    .catch(err => {
+      return next(err)
+    })
   }
 }
 
-module.export = QueueController
+module.exports = QueueController

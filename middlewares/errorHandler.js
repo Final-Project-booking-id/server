@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
   let errName = {
     message: 'Internal Server Error'
   }
-  if (erer.name === 'SequelizeValidationError') {
+  if (err.name === 'SequelizeValidationError') {
     status = 400;
     let arrMessage = []
     for (let i = 0; i < err.errors.length; i++) {
@@ -24,6 +24,12 @@ const errorHandler = (err, req, res, next) => {
     errName = {
       message: 'Bad Request',
       errors: arrMessage
+    }
+  } else if (err.name === 'Bad Request') {
+    status = 400
+    errName = {
+      message: 'Bad Request',
+      errors: [...err.errors]
     }
   }
 

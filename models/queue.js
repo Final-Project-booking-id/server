@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     book_date: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.NOW,
+      defaultValue: sequelize.Sequelize.NOW,
       allowNull: false,
       validate: {
         notEmpty: {
