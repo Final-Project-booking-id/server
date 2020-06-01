@@ -1,9 +1,11 @@
 const { Queue } = require('../models')
 const { Op } = require('sequelize')
+const { generateToken } = require('../helpers/jwt');
 
 class QueueController {
   static create(req, res, next) {
     const { CustomerId, ServiceId } = req.body
+    console.log(req.body)
     Queue.findAll({
       where: {
         [Op.and]: [
@@ -34,6 +36,9 @@ class QueueController {
     const { id } = req.params
     Queue.findOne({ where: { id: id } })
       .then(response => {
+        response.forEach(el => {
+          el.dataValues.token = generateToken(el.dataValues)
+        })
         return res.status(200).json(response)
       })
       .catch(err => {
@@ -52,6 +57,9 @@ class QueueController {
       }
     })
       .then(response => {
+        response.forEach(el => {
+          el.dataValues.token = generateToken(el.dataValues)
+        })
         return res.status(200).json(response)
       })
       .catch(err => {
@@ -72,6 +80,9 @@ class QueueController {
       }
     )
       .then(response => {
+        response.forEach(el => {
+          el.dataValues.token = generateToken(el.dataValues)
+        })
         return res.status(200).json(response)
       })
       .catch(err => {

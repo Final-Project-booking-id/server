@@ -31,6 +31,19 @@ const errorHandler = (err, req, res, next) => {
       message: 'Bad Request',
       errors: [...err.errors]
     }
+  } else if (err.name === 'JsonWebTokenError') {
+    status = 500
+    errName = {
+      name: err.name,
+      message: err.message,
+    }
+  } else if (err.name === 'Not Found') {
+    status = 404
+    errName = {
+      name: 'Not Found',
+      message: [...err.errors]
+
+    }
   }
 
   res.status(status).json(errName)

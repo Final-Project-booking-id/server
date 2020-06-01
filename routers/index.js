@@ -2,6 +2,7 @@ const router = require('express').Router()
 const QueueController = require('../controllers/queueController')
 const ServiceController = require('../controllers/serviceController')
 const MerchantController = require('../controllers/merchantController')
+const qrVerify = require('../helpers/qrVerify')
 // const CustomerController = require('../controllers/customerController')
 
 //SERVICE
@@ -18,5 +19,8 @@ router.get('/queue/service/:id', QueueController.readByService)
 router.get('/queue/unfinishedCust/:id', QueueController.readByCustUnfinished)
 router.post('/queue', QueueController.create)
 router.patch('/queue/:id', QueueController.updateStatus)
+
+//QR VERIFY
+router.post('/verify', qrVerify)
 
 module.exports = router
