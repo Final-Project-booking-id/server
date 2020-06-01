@@ -59,6 +59,10 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'date is required'
         }
       }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     sequelize,

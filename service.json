@@ -2,51 +2,71 @@
   {
     "MerchantId": 1,
     "name": "Car Wash",
-    "estimation_time": "30 minute"
+    "estimation_time": "30 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 1,
     "name": "Premium Car Wash",
-    "estimation_time": "60 minute"
+    "estimation_time": "60 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 2,
     "name": "Car Wash",
-    "estimation_time": "30 minute"
+    "estimation_time": "30 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 2,
     "name": "Premium Car Wash",
-    "estimation_time": "60 minute"
+    "estimation_time": "60 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 3,
     "name": "Car Wash",
-    "estimation_time": "30 minute"
+    "estimation_time": "30 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 3,
     "name": "Premium Car Wash",
-    "estimation_time": "60 minute"
+    "estimation_time": "60 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 4,
     "name": "Car Wash",
-    "estimation_time": "30 minute"
+    "estimation_time": "30 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 4,
     "name": "Premium Car Wash",
-    "estimation_time": "60 minute"
+    "estimation_time": "60 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 5,
     "name": "Car Wash",
-    "estimation_time": "30 minute"
+    "estimation_time": "30 minute",
+    "price": 20000,
+    "description": "Lorem Ipsum..."
   },
   {
     "MerchantId": 5,
     "name": "Premium Car Wash",
-    "estimation_time": "60 minute"
+    "estimation_time": "60 minute",
+    "price": 15000,
+    "description": "Lorem Ipsum..."
   }
 ]

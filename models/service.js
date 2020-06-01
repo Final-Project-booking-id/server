@@ -43,6 +43,34 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'estimation_time is required'
         }
       }
+    },
+    price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'price is required'
+        },
+        notNull: {
+          args: true,
+          msg: 'price is required'
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'description is required'
+        },
+        notNull: {
+          args: true,
+          msg: 'description is required'
+        }
+      }
     }
   }, {
     sequelize,

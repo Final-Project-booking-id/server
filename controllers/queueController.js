@@ -1,4 +1,4 @@
-const { Queue } = require('../models')
+const { Queue, Customer } = require('../models')
 const { Op } = require('sequelize')
 const { generateToken } = require('../helpers/jwt');
 
@@ -24,7 +24,6 @@ class QueueController {
               return next(err)
             })
         } else {
-          console.log(response, '<<<<<<<<<<<<<<<<<<<<<<INI MASUK ELSE BENER')
           return next({
             name: 'Bad Request',
             errors: [{ message: 'You cannot have more than one ongoing booking' }]
@@ -34,11 +33,13 @@ class QueueController {
   }
   static readByQueueId(req, res, next) {
     const { id } = req.params
-    Queue.findOne({ where: { id: id } })
+    Queue.findOne({ where: { id: id }, include : [
+      {
+        model: Customer
+      }
+    ] })
       .then(response => {
-        response.forEach(el => {
-          el.dataValues.token = generateToken(el.dataValues)
-        })
+        response.dataValues.token = generateToken(response.dataValues)
         return res.status(200).json(response)
       })
       .catch(err => {
@@ -54,7 +55,12 @@ class QueueController {
           { ServiceId: id },
           { status: ['Pending', 'OnProgress'] }
         ]
-      }
+      },
+      include : [
+        {
+          model: Customer
+        }
+      ]
     })
       .then(response => {
         response.forEach(el => {
@@ -69,21 +75,26 @@ class QueueController {
 
   static readByCustUnfinished(req, res, next) {
     const { id } = req.params
-    Queue.findOne(
+    Queue.findAll(
       {
         where: {
           [Op.and]: [
             { status: ['Pending', 'OnProgress'] },
             { CustomerId: id }
           ]
-        }
+        },
+        include : [
+          {
+            model: Customer
+          }
+        ]
       }
     )
       .then(response => {
         response.forEach(el => {
           el.dataValues.token = generateToken(el.dataValues)
         })
-        return res.status(200).json(response)
+        return res.status(200).json(response[0])
       })
       .catch(err => {
         return next(err)
