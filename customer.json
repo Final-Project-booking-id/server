@@ -1,38 +1,38 @@
 [
-  {
-      "police_number": "A 111 AB",
-      "password": "123456"
-  },
-  {
-      "police_number": "B 222 CD",
-      "password": "123456"
-  },
-  {
-      "police_number": "C 333 EF",
-      "password": "123456"
-  },
-  {
-      "police_number": "D 444 GH",
-      "password": "123456"
-  },
-  {
-      "police_number": "E 555 IJ",
-      "password": "123456"
-  },
-  {
-      "police_number": "F 666 KL",
-      "password": "123456"
-  },
-  {
-      "police_number": "G 777 MN",
-      "password": "123456"
-  },
-  {
-      "police_number": "H 888 OP",
-      "password": "123456"
-  },
-  {
-      "police_number": "I 999 QR",
-      "password": "123456"
-  }
+    {
+        "police_number": "A 111 AB",
+        "password": "123456"
+    },
+    {
+        "police_number": "B 222 CD",
+        "password": "123456"
+    },
+    {
+        "police_number": "C 333 EF",
+        "password": "123456"
+    },
+    {
+        "police_number": "D 444 GH",
+        "password": "123456"
+    },
+    {
+        "police_number": "E 555 IJ",
+        "password": "123456"
+    },
+    {
+        "police_number": "F 666 KL",
+        "password": "123456"
+    },
+    {
+        "police_number": "G 777 MN",
+        "password": "123456"
+    },
+    {
+        "police_number": "H 888 OP",
+        "password": "123456"
+    },
+    {
+        "police_number": "I 999 QR",
+        "password": "123456"
+    }
 ]

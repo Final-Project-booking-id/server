@@ -13,8 +13,10 @@ io.on("connection", (socket) => {
     // }
     // interval = setInterval(() => getApiAndEmit(socket), 1000)
 
-    socket.on('Client', (data) => {
-        io.emit('Server', data)
+
+    socket.on("Client", (data) => {
+        console.log(data)
+        if (data) io.emit("Server", data)
     })
     socket.on("disconnect", () => {
         console.log("Client disconnected")
