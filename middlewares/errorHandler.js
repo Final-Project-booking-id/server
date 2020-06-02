@@ -44,6 +44,13 @@ const errorHandler = (err, req, res, next) => {
       message: [...err.errors]
 
     }
+  } else if (err.name === 'Forbidden') {
+    status = 403
+    errName = {
+      name: 'Forbidden',
+      errors: [...err.errors]
+
+    }
   }
 
   res.status(status).json(errName)
