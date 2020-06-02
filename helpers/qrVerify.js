@@ -10,7 +10,7 @@ const qrVerify = (req, res, next) => {
                 where: {
                   [Op.and]: [
                     { ServiceId: payload.ServiceId },
-                    { status: ['Pending', 'OnProgress'] }
+                    { status: ['Pending'] }
                   ]
                 }
               })
