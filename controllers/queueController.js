@@ -5,7 +5,7 @@ const { generateToken } = require('../helpers/jwt');
 class QueueController {
   static create(req, res, next) {
     const { CustomerId, ServiceId } = req.body
-    console.log(req.body)
+
     Queue.findAll({
       where: {
         [Op.and]: [
@@ -33,11 +33,13 @@ class QueueController {
   }
   static readByQueueId(req, res, next) {
     const { id } = req.params
-    Queue.findOne({ where: { id: id }, include : [
-      {
-        model: Customer
-      }
-    ] })
+    Queue.findOne({
+      where: { id: id }, include: [
+        {
+          model: Customer
+        }
+      ]
+    })
       .then(response => {
         response.dataValues.token = generateToken(response.dataValues)
         return res.status(200).json(response)
@@ -56,7 +58,7 @@ class QueueController {
           { status: ['Pending', 'OnProgress'] }
         ]
       },
-      include : [
+      include: [
         {
           model: Customer
         }
@@ -73,6 +75,34 @@ class QueueController {
       })
   }
 
+
+  static readHistory(req, res, next) {
+    const { id } = req.params
+    Queue.findAll({
+      where: {
+        [Op.and]: [
+          { ServiceId: id },
+          { status: ['finish', 'cancel'] }
+        ]
+      },
+      include: [
+        {
+          model: Customer
+        }
+      ]
+    })
+      .then(response => {
+        response.forEach(el => {
+          el.dataValues.token = generateToken(el.dataValues)
+        })
+        return res.status(200).json(response)
+      })
+      .catch(err => {
+        return next(err)
+      })
+  }
+
+
   static readByCustUnfinished(req, res, next) {
     const { id } = req.params
     Queue.findAll(
@@ -83,7 +113,7 @@ class QueueController {
             { CustomerId: id }
           ]
         },
-        include : [
+        include: [
           {
             model: Customer
           }
@@ -103,22 +133,22 @@ class QueueController {
 
   static updateStatus(req, res, next) {
     const { id } = req.params
-    
+
     Queue.update({
       ...req.body
     },
-    {
-      where: {
-        id
-      },
-      returning: true
-    })
-    .then(response => {
-      return res.status(200).json(response[1][0])
-    })
-    .catch(err => {
-      return next(err)
-    })
+      {
+        where: {
+          id
+        },
+        returning: true
+      })
+      .then(response => {
+        return res.status(200).json(response[1][0])
+      })
+      .catch(err => {
+        return next(err)
+      })
   }
 }
 

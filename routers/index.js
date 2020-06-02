@@ -3,7 +3,13 @@ const QueueController = require('../controllers/queueController')
 const ServiceController = require('../controllers/serviceController')
 const MerchantController = require('../controllers/merchantController')
 const qrVerify = require('../helpers/qrVerify')
-// const CustomerController = require('../controllers/customerController')
+const CustomerController = require('../controllers/customerController')
+
+//CUSTOMER REGISTER
+router.post('/register', CustomerController.register)
+
+//GET HISTORY
+router.get('/queue/serviceHistory/:id', QueueController.readHistory)
 
 //SERVICE
 router.get('/service/:id', ServiceController.readByMerchantId)
