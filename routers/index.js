@@ -19,6 +19,8 @@ router.get('/service/:id', ServiceController.readByMerchantId)
 //MERCHANT
 router.get('/merchant', MerchantController.readAllMerchant)
 
+router.post('/merchant', MerchantController.createMerchant)
+
 //QUEUE
 router.get('/queue/:id', QueueController.readByQueueId)
 //Mencari antrian berdasarkan service id, gunanya untuk menampilkan antrian yang sedang berjalan dalam sebuah service, ditampilkan di client customer dan merchant
