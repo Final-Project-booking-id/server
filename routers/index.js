@@ -8,6 +8,8 @@ const CustomerController = require('../controllers/customerController')
 //CUSTOMER REGISTER
 router.post('/register', CustomerController.register)
 
+router.post('/login', CustomerController.login)
+
 //GET HISTORY
 router.get('/queue/serviceHistory/:id', QueueController.readHistory)
 

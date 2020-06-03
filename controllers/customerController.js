@@ -13,6 +13,24 @@ class CustomerController {
                 })
             }).catch(next)
     }
+
+    static login(req, res, next) {
+        let { police_number, password } = req.body
+        Customer.findOne({
+            where: {
+                police_number,
+                password
+            }
+        })
+            .then((response) => {
+                const { dataValues } = response
+                return res.status(200).json({
+                    id: dataValues.id,
+                    police_number: dataValues.police_number,
+                    password: dataValues.password
+                })
+            }).catch(next)
+    }
 }
 
 module.exports = CustomerController
