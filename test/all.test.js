@@ -14,7 +14,8 @@ const fs = require('fs')
 // Validasi create queue: not null except checkou - Done
 // Validasi create queue: on progress (prohibited) - Done
 
-
+let queueTest = ''
+let queueTest2 = ''
 const merchantsjson = JSON.parse(fs.readFileSync('./merchant.json'))
 const customersjson = JSON.parse(fs.readFileSync('./customer.json'))
 const servicesjson = JSON.parse(fs.readFileSync('./service.json'))
@@ -36,41 +37,16 @@ queuejson.forEach(el => {
     el.updatedAt = new Date()
 })
 
-
-// console.log(merchantsjson, '<<<<<MERCHANT>>>>>>')
-// console.log(customersjson, '<<<<<CUSTOMER>>>>>>')
-// console.log(servicesjson, '<<<<<SERVICES>>>>>>')
-// afterAll((done) => {
-//   queryInterface
-//     .bulkDelete("Merchants", {})
-//     .then((_) => {
-//       return queryInterface.bulkDelete("Customers", {})
-//     })
-//     .then((_) => {
-//       return queryInterface.bulkDelete("Services", {})
-//     })
-//     .then((_) => {
-//       return queryInterface.bulkDelete("Queues", {})
-//       done();
-//     })
-//     .catch((err) => {
-//       done(err);
-//     });
-// });
-
 beforeAll((done) => {
   queryInterface
     .bulkInsert("Merchants", merchantsjson)
     .then((result) => {
-      // console.log(result, '<<<<<<<<<<<<< MERCHANT')
       return queryInterface.bulkInsert("Customers", customersjson)
     })
     .then((result) => {
-      // console.log(result, "<<<<<<<<<<<<<<<<RREESUUULLTTT")
       return queryInterface.bulkInsert("Services", servicesjson)
     })
     .then((result) => {
-      // console.log(result, '<<<< servisecc >>>')
       return queryInterface.bulkInsert('Queues', queuejson)
     })
     .then((result) => {
@@ -80,6 +56,7 @@ beforeAll((done) => {
       done(err)
     })
 });
+
 
 
 //Service
@@ -130,6 +107,8 @@ describe("Queue Table", () => {
           .get("/queue/service/1")
           .end((err, res) => {
             if (err) done(err);
+            queueTest = JSON.parse(res.text)[0]
+            queueTest2 = JSON.parse(res.text)[1]
             expect(res.status).toBe(200);
             expect.any(Array);
             return done();
@@ -161,6 +140,67 @@ describe("Queue Table", () => {
       });
     });
   });
+
+
+  // VERIFY QUEUE
+
+  describe('verify queue', () => {
+    describe('success verify queue', () => {
+      test('should return payload', () => {
+        request(app)
+          .post('/verify')
+          .send({ token: queueTest.token })
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res.status).toBe(200)
+            delete queueTest.token
+            delete res.body.iat
+            expect.any(Array);
+          })
+      })
+
+    })
+
+    describe('error verify', () => {
+      test('should return status 500', () => {
+        request(app)
+          .post('/verify')
+          .send({ token: 'dbavfadshkfbadkvfa' })
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res.status).toBe(500)
+            expect(res.body).toHaveProperty('name', 'JsonWebTokenError')
+            expect(res.body).toHaveProperty('message', 'jwt malformed')
+          })
+      })
+
+      test('should return status 500', () => {
+        request(app)
+          .post('/verify')
+          .send({ token: `${queueTest.token}sahjdshjdj` })
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res.status).toBe(500)
+            expect(res.body).toHaveProperty('name', 'JsonWebTokenError')
+            expect(res.body).toHaveProperty('message', 'invalid signature')
+          })
+      })
+
+      test('should return status 403', () => {
+        request(app)
+          .post('/verify')
+          .send({ token: `${queueTest2.token}` })
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res.status).toBe(403)
+            expect(res.body).toHaveProperty('name', 'Forbidden')
+            expect(res.body).toHaveProperty('errors', expect.any(Array))
+          })
+      })
+    })
+
+  })
+
   //Edit Queue
   describe("edit queue", () => {
     const change = {
@@ -221,7 +261,7 @@ describe("Queue Table", () => {
     describe("success create queue", () => {
       test("this should return with id and data of queue", (done) => {
         const inputQueue = {
-          CustomerId: 7,
+          CustomerId: 8,
           ServiceId: 1,
           status: "Pending",
           book_date: "2020-05-29T02:07:51.682Z",
@@ -296,7 +336,7 @@ describe("Queue Table", () => {
           });
       });
       describe("error validation unfinish", () => {
-        
+
         test("this should return error with status 400 not finish queue", (done) => {
           request(app)
             .post("/queue")
@@ -318,3 +358,96 @@ describe("Queue Table", () => {
   });
 
 });
+
+
+// CUSTOMER TABLE
+describe('Customer Table', () => {
+  // CREATE USER
+  describe('Register User', () => {
+    describe('success register ', () => {
+      test('should return status 201 success create user', (done) => {
+        let data = {
+          police_number: 'F 1111 COY',
+          password: '123456'
+        }
+        request(app)
+          .post('/register')
+          .send(data)
+          .end((err, res) => {
+            if (err) {
+              return done(err)
+            } else {
+              expect(err).toBe(null)
+              expect(res.body).toHaveProperty('police_number', expect.any(String))
+              expect(res.status).toBe(201)
+              return done()
+            }
+          })
+      })
+
+    })
+
+    describe('error process', () => {
+      test('should be return error status (400) of missing password', (done) => {
+        let withOutPassword = {
+          police_number: 'F 1111 NIH'
+        }
+        request(app)
+          .post('/register')
+          .send(withOutPassword)
+          .end((err, res) => {
+            if (err) {
+              return done(err)
+            } else {
+              expect(res.body).toHaveProperty('message', 'Bad Request')
+              return done()
+            }
+          })
+      })
+    })
+
+  })
+
+  describe('Login User', () => {
+    describe('success login user', () => {
+      test('should return status 200 success login user', (done) => {
+        const data = {
+          police_number: 'F 1111 COY',
+          password: '123456'
+        }
+        request(app)
+          .post('/login')
+          .send(data)
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res.status).toBe(200)
+            expect(res.body).toHaveProperty('id', expect.any(Number))
+            return done()
+          })
+      })
+    })
+
+    describe('error login user', () => {
+      test('should return status 400 error login user wrong password', (done) => {
+        const data = {
+          police_number: 'F 1111 COY',
+          password: '3934834823'
+        }
+        request(app)
+          .post('/login')
+          .send(data)
+          .end((err, res) => {
+            if (err) done(err)
+            expect(res.status).toBe(400)
+            expect(res.body).toHaveProperty('message', 'Bad Request')
+            expect(res.body).toHaveProperty('errors', expect.any(Array))
+            return done()
+          })
+      })
+
+    })
+
+
+  })
+
+})

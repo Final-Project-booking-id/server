@@ -6,6 +6,12 @@
         "book_date": "2020-05-29T02:07:51.682Z"
     },
     {
+        "CustomerId": 7,
+        "ServiceId": 1,
+        "status": "Pending",
+        "book_date": "2020-05-29T02:07:51.682Z"
+    },
+    {
         "CustomerId": 2,
         "ServiceId": 2,
         "status": "Pending",

@@ -1,5 +1,4 @@
 const errorHandler = (err, req, res, next) => {
-  console.log(err);
   let status = 500;
   let errName = {
     message: 'Internal Server Error'
@@ -36,13 +35,6 @@ const errorHandler = (err, req, res, next) => {
     errName = {
       name: err.name,
       message: err.message,
-    }
-  } else if (err.name === 'Not Found') {
-    status = 404
-    errName = {
-      name: 'Not Found',
-      message: [...err.errors]
-
     }
   } else if (err.name === 'Forbidden') {
     status = 403
